@@ -1,5 +1,11 @@
 import { handleErrorResponse } from "./handle-error"
-import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next"
+import { ParsedUrlQuery } from "querystring"
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next"
 
 export namespace Client {
   /**
@@ -36,13 +42,15 @@ export namespace Client {
    * @param fn
    */
   export function getServerSideProps<T>(
-    fn: (context: Parameters<GetServerSideProps<T>>[0]) => Promise<{ props: T }>
-  ) {
-    const returnedFn: GetServerSideProps<T> = async function (context) {
+    fn: (context: GetServerSidePropsContext<ParsedUrlQuery>) => Promise<T>
+  ): GetServerSideProps<T> {
+    const generatedFn: GetServerSideProps<T, ParsedUrlQuery> = async function (
+      context
+    ) {
       const response = await fn(context)
-      return response
+      return { props: response }
     }
-    return returnedFn
+    return generatedFn
   }
 
   /**

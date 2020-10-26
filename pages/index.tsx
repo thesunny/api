@@ -1,11 +1,17 @@
-import { GetTime } from "./api/get-time"
+// import { GetTime } from "./api/get-time"
+import getTime from "./api/get-time"
 import { Client } from "~/src/client"
+import { Server } from "~/src/server"
 
-export const getServerSideProps = Client.getServerSideProps(async () => {
+type GetTime = Server.MethodType<typeof getTime>
+
+export const getServerSideProps = Client.getServerSideProps<{
+  serverTime: number
+}>(async () => {
   const props = await Client.call<GetTime>("get-time", {})
-  return { props }
+  return props
 })
 
-export default Client.Page<typeof getServerSideProps>(() => {
-  return <div>Hello World</div>
+export default Client.Page<typeof getServerSideProps>(({ serverTime }) => {
+  return <div>Hello World {serverTime}</div>
 })
