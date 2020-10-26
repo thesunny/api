@@ -5,9 +5,7 @@ import { Server } from "~/src/server"
 
 type GetTime = Server.MethodType<typeof getTime>
 
-export const getServerSideProps = Client.getServerSideProps<{
-  serverTime: number
-}>(async () => {
+export const getServerSideProps = Client.getServerSideProps(async () => {
   const props = await Client.call<GetTime>("get-time", {})
   return props
 })

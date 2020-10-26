@@ -32,7 +32,22 @@ export namespace Client {
     } else {
       handleErrorResponse(path, props)
       const text = await res.text()
-      throw new Error(text)
+      const htmlErrorTitleMatch = text.match(/<title>(.*)<\/title>/)
+      let errorTitle = htmlErrorTitleMatch ? htmlErrorTitleMatch[1] : null
+      if (errorTitle) {
+        /**
+         * If we can extract the title from the text which is, presumably HTML,
+         * then throw an error with just the title.
+         */
+        throw new Error(errorTitle)
+      } else {
+        /**
+         * If we can't find the title, for the time being, just dump everything
+         * but if it is HTML, it is going to look really messy because we will
+         * be seeing unparsed HTML code.
+         */
+        throw new Error(text)
+      }
     }
   }
 
