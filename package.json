@@ -1,6 +1,6 @@
 {
   "name": "@thesunny/api",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "main": "dist/src/server/index.js",
@@ -27,6 +27,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start:dev": "next dev -p 5000",
-    "publish:npm": "yarn build && yarn version --minor"
+    "publish:npm": "npm publish",
+    "version:patch": "yarn version --patch"
   }
 }
