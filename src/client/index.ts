@@ -12,7 +12,7 @@ export namespace Client {
     path: string,
     props: T["props"]
   ) {
-    const res = await fetch(`http://localhost:4000/api/${path}`, {
+    const res = await fetch(`http://localhost:5000/api/${path}`, {
       method: "POST",
       body: JSON.stringify(props),
       headers: { "Content-Type": "application/json" },
@@ -30,6 +30,11 @@ export namespace Client {
     }
   }
 
+  /**
+   * Create the getServerSideProps method
+   *
+   * @param fn
+   */
   export function getServerSideProps<T>(
     fn: (context: Parameters<GetServerSideProps<T>>[0]) => Promise<{ props: T }>
   ) {
@@ -40,6 +45,11 @@ export namespace Client {
     return returnedFn
   }
 
+  /**
+   * Create the Page default export
+   *
+   * @param fn
+   */
   export function Page<T>(fn: (props: InferGetServerSidePropsType<T>) => any) {
     return fn
   }
