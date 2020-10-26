@@ -1,9 +1,16 @@
 {
   "name": "@thesunny/api",
   "version": "1.0.0",
-  "main": "dist/src/server/index.js",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
+  "main": "dist/src/server/index.js",
+  "files": [
+    "client.js",
+    "client.d.ts",
+    "server.js",
+    "server.d.ts",
+    "dist/**/*"
+  ],
   "dependencies": {
     "jsome": "^2.5.0",
     "superstruct": "^0.10.12"

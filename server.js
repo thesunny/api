@@ -1,1 +1,1 @@
-module.exports = require("./dist/server/index")
+module.exports = require("./dist/src/server/index")
