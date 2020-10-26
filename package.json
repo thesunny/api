@@ -1,6 +1,6 @@
 {
   "name": "@thesunny/api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "main": "dist/src/server/index.js",
