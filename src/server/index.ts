@@ -3,6 +3,7 @@ import { assert, coerce, number, Struct } from "superstruct"
 import { JSONObject } from "~/lib/json-types"
 import { Unpromise } from "~/lib/ts-utils"
 import { log } from "./log"
+import { ServerMethod } from "../types"
 
 let lastId = 0
 
@@ -74,9 +75,5 @@ export namespace Server {
    * Takes a handler returned by `Server.method` and gets the TypeScript
    * type for the response.
    */
-  export type MethodType<
-    T extends (req: NextApiRequest, res: NextApiResponse) => Promise<any>
-  > = Unpromise<ReturnType<T>>
+  export type MethodType<T extends ServerMethod> = Unpromise<ReturnType<T>>
 }
-
-// const Props = Server.Props({ id: number() })

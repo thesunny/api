@@ -1,12 +1,8 @@
-// import { GetTime } from "./api/get-time"
-import crash from "./api/crash"
+import crashMethod from "./api/crash"
 import { Client } from "~/src/client"
-import { Server } from "~/src/server"
-
-type Crash = Server.MethodType<typeof crash>
 
 export const getServerSideProps = Client.getServerSideProps(async () => {
-  const props = await Client.call<Crash>("crash", {})
+  const props = await Client.call<typeof crashMethod>("crash", {})
   return props
 })
 

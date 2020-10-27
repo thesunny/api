@@ -6,6 +6,7 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next"
+import { MethodType, ServerMethod } from "../types"
 
 export namespace Client {
   /**
@@ -14,11 +15,17 @@ export namespace Client {
    * @param path the path under the `pages/api` directory
    * @param props the props to pass to the `API.method`
    */
-  export async function call<T extends { props: any; response: any }>(
+  export async function call<T extends ServerMethod>(
     path: string,
-    props: T["props"]
+    props: MethodType<T>["props"]
   ) {
-    const res = await fetch(`http://localhost:5000/api/${path}`, {
+    if (process.env.NEXT_PUBLIC_API_URL == null) {
+      throw new Error(
+        `process.env.NEXT_PUBLIC_API_URL must be defined in environment`
+      )
+    }
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/${path}`
+    const res = await fetch(url, {
       method: "POST",
       body: JSON.stringify(props),
       headers: { "Content-Type": "application/json" },
@@ -28,9 +35,9 @@ export namespace Client {
        * If the fetch is successful, return the data
        */
       const json = await res.json()
-      return json as T["response"]
+      return json as MethodType<T>["response"]
     } else {
-      handleErrorResponse(path, props)
+      handleErrorResponse({ path, url, props })
       const text = await res.text()
       const htmlErrorTitleMatch = text.match(/<title>(.*)<\/title>/)
       let errorTitle = htmlErrorTitleMatch ? htmlErrorTitleMatch[1] : null
