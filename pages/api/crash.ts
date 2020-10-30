@@ -1,5 +1,4 @@
-import { Server } from "~/src/server"
-import * as s from "superstruct"
+import { Server, s } from "~/src/server"
 
 const Props = s.object({})
 

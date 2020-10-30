@@ -1,11 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { assert, coerce, number, Struct } from "superstruct"
+import * as s from "superstruct"
 import { JSONObject } from "~/lib/json-types"
 import { Unpromise } from "~/lib/ts-utils"
 import { log } from "./log"
 import { ServerMethod } from "../types"
 
 let lastId = 0
+
+export { s }
 
 export namespace Server {
   /**
