@@ -29,6 +29,7 @@ export namespace Client {
       method: "POST",
       body: JSON.stringify(props),
       headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
     })
     if (res.ok) {
       /**
