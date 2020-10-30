@@ -1,1 +1,1 @@
-export { Server } from "./dist/src/server/index"
+export { Server, s } from "./dist/src/server/index"
