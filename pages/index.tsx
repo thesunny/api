@@ -1,22 +1,10 @@
-// import { GetTime } from "./api/get-time"
 import getTime from "./api/get-time"
 import { Client } from "~/src/client"
-import { Server } from "~/src/server"
 
-// type GetTime = Server.MethodType<typeof getTime>
-
-// export const getServerSideProps = Client.getServerSideProps(async () => {
-//   const props = await Client.call<GetTime>("get-time", {})
-//   return props
-// })
-
-export const getServerSideProps = Client.getServerSideProps(
-  async ({ call }) => {
-    // console.log(Object.keys(context))
-    const props = await call<typeof getTime>("get-time", {})
-    return props
-  }
-)
+export const getServerSideProps = Client.getServerSideProps(async (context) => {
+  const props = await Client.call<typeof getTime>("get-time", {}, context)
+  return props
+})
 
 export default Client.Page<typeof getServerSideProps>(
   ({ cookies, serverTime }) => {

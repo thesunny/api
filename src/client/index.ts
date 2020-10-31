@@ -3,6 +3,7 @@ import { ParsedUrlQuery } from "querystring"
 import {
   GetServerSideProps,
   GetServerSidePropsContext,
+  GetServerSidePropsResult,
   InferGetServerSidePropsType,
   NextPage,
 } from "next"
@@ -19,7 +20,7 @@ export namespace Client {
   export async function _call<T extends ServerMethod>(
     path: string,
     props: MethodType<T>["props"],
-    headers: Parameters<typeof fetch>[1]["headers"]
+    headers?: Record<string, string> //Parameters<typeof fetch>[1]["headers"]
   ) {
     if (process.env.NEXT_PUBLIC_API_URL == null) {
       throw new Error(
@@ -68,9 +69,25 @@ export namespace Client {
    */
   export async function call<T extends ServerMethod>(
     path: string,
-    props: MethodType<T>["props"]
+    props: MethodType<T>["props"],
+    context?: GetServerSidePropsContext<ParsedUrlQuery>
   ) {
-    return await _call(path, props, {})
+    if (typeof window !== "undefined") {
+      // call from browser
+      return await _call(path, props, {})
+    } else {
+      if (typeof context === "undefined") {
+        throw new Error(
+          `When Client.call is executed on the server, the context must be passed in as the third argument`
+        )
+      }
+      const headers: Record<string, string> = {}
+      if (context.req.headers["cookie"]) {
+        headers.Cookie = context.req.headers["cookie"]
+      }
+
+      return _call(path, props, headers)
+    }
   }
 
   /**
@@ -80,16 +97,28 @@ export namespace Client {
    */
   export function getServerSideProps<T>(
     fn: (
-      context: GetServerSidePropsContext<ParsedUrlQuery> & { call: typeof call }
+      context: GetServerSidePropsContext<ParsedUrlQuery> //& { call: typeof call }
     ) => Promise<T>
   ): GetServerSideProps<T> {
-    const generatedFn: GetServerSideProps<T, ParsedUrlQuery> = async function (
-      context
+    // const testgenfn: GetServerSideProps = async function (context) {
+    //   const callWithCookies: typeof call = (path, props) => {
+    //     const headers: Record<string, string> = {}
+    //     if (context.req.headers["cookie"]) {
+    //       headers.Cookie = context.req.headers["cookie"]
+    //     }
+
+    //     // return _call(path, props, { Cookie: context.req.headers["cookie"] })
+    //     return _call(path, props, headers)
+    //   }
+    //   const response = await fn(context)
+    //   // const response = await fn({ call: callWithCookies, ...context })
+    //   return { props: response }
+    // }
+
+    const generatedFn = async function (
+      context: GetServerSidePropsContext<ParsedUrlQuery>
     ) {
-      const callWithCookies: typeof call = (path, props) => {
-        return _call(path, props, { Cookie: context.req.headers["cookie"] })
-      }
-      const response = await fn({ call: callWithCookies, ...context })
+      const response = await fn(context)
       return { props: response }
     }
     return generatedFn
