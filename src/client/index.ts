@@ -10,14 +10,16 @@ import { MethodType, ServerMethod } from "../types"
 
 export namespace Client {
   /**
-   * Make a call to the server API
+   * Private version of making a call to the server API that allows adding
+   * headers so cookies can be passed through from server side requests.
    *
    * @param path the path under the `pages/api` directory
    * @param props the props to pass to the `API.method`
    */
-  export async function call<T extends ServerMethod>(
+  export async function _call<T extends ServerMethod>(
     path: string,
-    props: MethodType<T>["props"]
+    props: MethodType<T>["props"],
+    headers: Parameters<typeof fetch>[1]["headers"]
   ) {
     if (process.env.NEXT_PUBLIC_API_URL == null) {
       throw new Error(
@@ -28,8 +30,7 @@ export namespace Client {
     const res = await fetch(url, {
       method: "POST",
       body: JSON.stringify(props),
-      headers: { "Content-Type": "application/json" },
-      credentials: "same-origin",
+      headers: { "Content-Type": "application/json", ...headers },
     })
     if (res.ok) {
       /**
@@ -60,17 +61,35 @@ export namespace Client {
   }
 
   /**
+   * Make a call to the server API
+   *
+   * @param path the path under the `pages/api` directory
+   * @param props the props to pass to the `API.method`
+   */
+  export async function call<T extends ServerMethod>(
+    path: string,
+    props: MethodType<T>["props"]
+  ) {
+    return await _call(path, props, {})
+  }
+
+  /**
    * Create the getServerSideProps method
    *
    * @param fn
    */
   export function getServerSideProps<T>(
-    fn: (context: GetServerSidePropsContext<ParsedUrlQuery>) => Promise<T>
+    fn: (
+      context: GetServerSidePropsContext<ParsedUrlQuery> & { call: typeof call }
+    ) => Promise<T>
   ): GetServerSideProps<T> {
     const generatedFn: GetServerSideProps<T, ParsedUrlQuery> = async function (
       context
     ) {
-      const response = await fn(context)
+      const callWithCookies: typeof call = (path, props) => {
+        return _call(path, props, { Cookie: context.req.headers["cookie"] })
+      }
+      const response = await fn({ call: callWithCookies, ...context })
       return { props: response }
     }
     return generatedFn
