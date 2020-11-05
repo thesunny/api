@@ -8,6 +8,7 @@ import {
   NextPage,
 } from "next"
 import { MethodType, ServerMethod } from "../types"
+import * as s from "superstruct"
 
 export namespace Client {
   /**
@@ -95,33 +96,82 @@ export namespace Client {
    *
    * @param fn
    */
-  export function getServerSideProps<T>(
-    fn: (
-      context: GetServerSidePropsContext<ParsedUrlQuery> //& { call: typeof call }
-    ) => Promise<T>
-  ): GetServerSideProps<T> {
-    // const testgenfn: GetServerSideProps = async function (context) {
-    //   const callWithCookies: typeof call = (path, props) => {
-    //     const headers: Record<string, string> = {}
-    //     if (context.req.headers["cookie"]) {
-    //       headers.Cookie = context.req.headers["cookie"]
-    //     }
+  // export function getServerSideProps<T>(
+  //   fn: (
+  //     context: GetServerSidePropsContext<ParsedUrlQuery> //& { call: typeof call }
+  //   ) => Promise<T>
+  // ): GetServerSideProps<T> {
+  //   const generatedFn = async function (
+  //     context: GetServerSidePropsContext<ParsedUrlQuery>
+  //   ) {
+  //     const response = await fn(context)
+  //     return { props: response }
+  //   }
+  //   return generatedFn
+  // }
 
-    //     // return _call(path, props, { Cookie: context.req.headers["cookie"] })
-    //     return _call(path, props, headers)
-    //   }
-    //   const response = await fn(context)
-    //   // const response = await fn({ call: callWithCookies, ...context })
-    //   return { props: response }
-    // }
+  const x = s.object({ id: s.number() })
+
+  type GetServerSidePropsFn<P extends object, RT> = (
+    props: P,
+    context: GetServerSidePropsContext<ParsedUrlQuery>
+  ) => Promise<RT>
+
+  export function getServerSideProps<RT, P extends object>(
+    struct: s.Struct<P>,
+    fn: GetServerSidePropsFn<P, RT>
+    // fn: (
+    //   props: U,
+    //   context: GetServerSidePropsContext //& { call: typeof call }
+    // ) => Promise<T>
+  ): GetServerSideProps<RT>
+
+  export function getServerSideProps<RT>(
+    fn: GetServerSidePropsFn<ParsedUrlQuery, RT>
+    // fn: (
+    //   props: ParsedUrlQuery,
+    //   context: GetServerSidePropsContext<ParsedUrlQuery> //& { call: typeof call }
+    // ) => Promise<RT>
+  ): GetServerSideProps<RT>
+
+  export function getServerSideProps<RT>(
+    arg0:
+      | s.Struct<object>
+      | ((x: object, y: GetServerSidePropsContext) => Promise<object>),
+    arg1?: (x: object, y: GetServerSidePropsContext<ParsedUrlQuery>) => any
+  ): GetServerSideProps<object> {
+    let fn: (x: object, y: GetServerSidePropsContext) => Promise<object>
+    let struct: s.Struct<object>
+
+    if (arg0 instanceof s.Struct && typeof arg1 === "function") {
+      /**
+       * Struct is provided as first argument
+       */
+      fn = arg1
+      struct = arg0
+    } else if (typeof arg0 === "function") {
+      /**
+       * Only a function is provided
+       */
+      fn = arg0
+      struct = s.object({})
+    }
 
     const generatedFn = async function (
       context: GetServerSidePropsContext<ParsedUrlQuery>
     ) {
-      const response = await fn(context)
+      const props = s.coerce(context.query, struct)
+      const response = await fn(props, context)
       return { props: response }
     }
     return generatedFn
+    // const generatedFn = async function (
+    //   context: GetServerSidePropsContext<ParsedUrlQuery>
+    // ) {
+    //   const response = await fn(context)
+    //   return { props: response }
+    // }
+    // return generatedFn
   }
 
   /**
