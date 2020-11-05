@@ -12,15 +12,13 @@ const ToId = s.coercion(s.number(), (value) => {
   return id
 })
 
-const Props = s.object({
-  id: ToId,
-})
+const Query = s.object({ id: ToId })
 
 export const getServerSideProps = Client.getServerSideProps(
-  Props,
   async ({ id }, context) => {
     return { id: id }
-  }
+  },
+  { Query }
 )
 
 export default Client.Page<typeof getServerSideProps>(function ({ id }) {
