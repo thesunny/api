@@ -27,11 +27,18 @@ export namespace Client {
         headers: { "Content-Type": "application/json" },
       })
       if (res.ok) {
-        /**
-         * If the fetch is successful, return the data
-         */
-        const json = await res.json()
-        return json as Response
+        try {
+          /**
+           * If the fetch is successful, return the data
+           */
+          const json = await res.json()
+          return json as Response
+        } catch (e) {
+          // API call from Client returned non-JSON type. Should show in debug.
+          throw new Error(
+            `Client call expects JSON response but API response was something else instead like text`
+          )
+        }
       } else {
         handleErrorResponse({ path, url, props })
         const text = await res.text()
@@ -46,7 +53,7 @@ export namespace Client {
            * in the source code listing in the browser because it is very
            * close to the `throw new Error` code.
            */
-          // Response not `ok` like 404 or 403 response
+          // Response not `ok` like 404 or 403 response. Should show in debug.
           throw new Error(errorTitle)
         } else {
           /**

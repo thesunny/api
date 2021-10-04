@@ -56,7 +56,13 @@ export namespace API {
          * to derive the return type of the created `API.method`
          */
         return response
-      } catch (error) {
+      } catch (e) {
+        /**
+         * We cast e as type `Error`. We can see from the code above that we
+         * don't throw anything of our own and Node should only throw Error
+         * types.
+         */
+        const error = e as Error
         log.error(id, error)
         res.status(500).send(error.stack)
         throw error

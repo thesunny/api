@@ -7,7 +7,7 @@ A featherweight API abstraction and browser client in a few KB for Next.js with 
 You will feel a need to improve this API. Most likely, you don't want to. There are sane reasons why the API is designed this way. Here are a few:
 
 - Next.js gets upgraded frequently so we don't extend Next.js types
-- The web page `type`s are therefore purely from Next. When we tried to override them by using a surrounding function, the method calls got long, and they were harder to manage when Next.js changed.
+- The `Web.getServerSideProps` method is very close to Next's `GetServerSideProps` type but the difference is that it allows us to automatically figure out the return type. Thenw e use `Web.Props` to generate the props from it. This type is just a copy of a Next type, but it's so much simpler to type and remember if it's just part of `Web` namespace.
 - The `Client` method is completely separate. It actually doesn't have any Next.js integration which keeps it clean.
 - The `API.method` function is as minimal as possible. Here's some thoughts on its design:
 - - **Get Response Type**: It does all you to get the `Response` type for consumption by the client using `API.Response`.

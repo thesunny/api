@@ -6,7 +6,8 @@ const Props = s.object({})
 const method = API.method(async (props) => {
   const a: number = 1
   if (a) {
-    throw new Error("Uh oh, it crashed")
+    // This is the place where it crashes in the code. Should show in debug.
+    throw new Error("Crashed on server API call")
   }
   return {}
 })

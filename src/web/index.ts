@@ -1,5 +1,6 @@
 import { JSONObject } from "~/lib/json-types"
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
+import { ParsedUrlQuery } from "querystring"
 
 export namespace Web {
   /**
@@ -38,4 +39,21 @@ export namespace Web {
    * ```
    */
   export type Props<T> = InferGetServerSidePropsType<T>
+
+  /**
+   * WARNING!
+   *
+   * Do not remove this method and use the `GetServerSideProps` function type
+   * instead. It won't return the proper type because it takes a generic and
+   * if you don't provide it, defaults to something like `any`.
+   *
+   * Usage:
+   * ```ts
+   * export const async function (context: Web.Context) {
+   *   return { props: {} }
+   * }
+   * ```
+   */
+  export type Context<Q extends ParsedUrlQuery = ParsedUrlQuery> =
+    GetServerSidePropsContext<Q>
 }

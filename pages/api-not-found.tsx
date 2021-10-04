@@ -1,12 +1,13 @@
-import { client } from "~/lib/client"
-import { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import { Client, Web } from "~/src"
 
-export const getServerSideProps: GetServerSideProps = async function () {
+export const client = Client.create(process.env.NEXT_PUBLIC_API_URL)
+
+export const getServerSideProps = Web.getServerSideProps(async function () {
   const props = await client.call("api/invalid-end-point", {})
   return { props }
-}
+})
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>
+type Props = Web.Props<typeof getServerSideProps>
 
 /**
  * The endpoint will not exist causing a 404 HTML page to be returned.

@@ -3,12 +3,12 @@ import { Client, Web } from "~/src"
 
 export const client = Client.create(process.env.NEXT_PUBLIC_API_URL)
 
-export const getServerSideProps = Web.getServerSideProps(async function () {
+export async function getServerSideProps(props: Web.Context) {
   const res = await client.call<APIProps, APIResponse>("api/crash", {
     username: "johndoe",
   })
   return { props: res }
-})
+}
 
 type Props = Web.Props<typeof getServerSideProps>
 

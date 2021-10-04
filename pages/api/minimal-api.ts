@@ -1,16 +1,15 @@
-import { API } from "~/src/api"
+import { jsend, API } from "~/src"
 import * as s from "superstruct"
-import { jsend } from "~/src/jsend"
 
 const APIProps = s.object({
-  username: s.string(),
+  number: s.number(),
 })
 
 const method = API.method(async function (props) {
-  const { username } = s.create(props, APIProps)
+  const { number } = s.create(props, APIProps)
   return jsend({
     status: "success",
-    data: { username, serverTime: new Date().getTime() },
+    data: { number },
   })
 })
 
