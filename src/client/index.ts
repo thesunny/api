@@ -14,12 +14,16 @@ export namespace Client {
     }
 
     /**
+     * Call an API endpoint.
      *
+     * @param path string that should not start with a '/'
+     * @param props JSON object
      */
     async function call<Props extends JSONObject, Response extends JSONObject>(
       path: string,
       props: Props
     ): Promise<Response> {
+      if (path.startsWith("/")) throw new Error(`path must not start with /`)
       const url = `${baseUrl}/${path}`
       const res = await fetch(url, {
         method: "POST",
@@ -29,7 +33,7 @@ export namespace Client {
       if (res.ok) {
         try {
           /**
-           * If the fetch is successful, return the data
+           * If the fetch is successful, return the data as JSON.
            */
           const json = await res.json()
           return json as Response
