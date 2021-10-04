@@ -14,7 +14,7 @@ function logErrorPreamble(path: string, props: object, url: string) {
   console.log("")
   console.log(`URL:  ${url}`)
   console.log(
-    `call: Client.call(${JSON.stringify(path)}, ${JSON.stringify(props, null, 2)})`
+    `call(${JSON.stringify(path)}, ${JSON.stringify(props, null, 2)})`
   )
   console.log("")
 }

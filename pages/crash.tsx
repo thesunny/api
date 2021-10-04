@@ -1,11 +1,17 @@
-import crashMethod from "./api/crash"
-import { Client } from "~/src/client"
+import { APIProps, APIResponse } from "~/pages/api/crash"
+import { client } from "~/lib/client"
+import { GetServerSideProps, InferGetServerSidePropsType } from "next"
 
-export const getServerSideProps = Client.getServerSideProps(async () => {
-  const props = await Client.call<typeof crashMethod>("crash", {})
-  return props
-})
+export const getServerSideProps: GetServerSideProps = async function () {
+  const res = await client.call<APIProps, APIResponse>("api/crash", {
+    username: "johndoe",
+  })
+  return { props: res }
+}
 
-export default Client.Page<typeof getServerSideProps>(() => {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>
+
+export default function Page(props: Props) {
+  console.log(props)
   return <div>API call will crash</div>
-})
+}

@@ -1,21 +1,26 @@
-// import { GetTime } from "./api/get-time"
-import getTime from "./api/get-time"
-import { Client } from "~/src/client"
-import { Server } from "~/src/server"
+import React from "react"
+import Link from "next/link"
 
-// type GetTime = Server.MethodType<typeof getTime>
-
-// export const getServerSideProps = Client.getServerSideProps(async () => {
-//   const props = await Client.call<GetTime>("get-time", {})
-//   return props
-// })
-
-
-export const getServerSideProps = Client.getServerSideProps(async () => {
-  const props = await Client.call<typeof getTime>("get-time", {})
-  return props
-})
-
-export default Client.Page<typeof getServerSideProps>(({ serverTime }) => {
-  return <div>Hello World {serverTime}</div>
-})
+export default function Page() {
+  return (
+    <div>
+      <ul>
+        <li>
+          <Link href="time">
+            <a>Time</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="crash">
+            <a>Crash</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="api-not-found">
+            <a>API Not Found</a>
+          </Link>
+        </li>
+      </ul>
+    </div>
+  )
+}

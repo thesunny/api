@@ -1,86 +1,63 @@
 import { handleErrorResponse } from "./handle-error"
-import { ParsedUrlQuery } from "querystring"
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next"
-import { MethodType, ServerMethod } from "../types"
+import { JSONObject } from "~/lib/json-types"
 
 export namespace Client {
   /**
-   * Make a call to the server API
-   *
-   * @param path the path under the `pages/api` directory
-   * @param props the props to pass to the `API.method`
+   * Create a client that makes calls starting with the `baseUrl`
    */
-  export async function call<T extends ServerMethod>(
-    path: string,
-    props: MethodType<T>["props"]
-  ) {
-    if (process.env.NEXT_PUBLIC_API_URL == null) {
-      throw new Error(
-        `process.env.NEXT_PUBLIC_API_URL must be defined in environment`
-      )
+  export function create(baseUrl: string) {
+    if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+      throw new Error(`baseUrl must start with http:// or https://`)
     }
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/${path}`
-    const res = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(props),
-      headers: { "Content-Type": "application/json" },
-    })
-    if (res.ok) {
-      /**
-       * If the fetch is successful, return the data
-       */
-      const json = await res.json()
-      return json as MethodType<T>["response"]
-    } else {
-      handleErrorResponse({ path, url, props })
-      const text = await res.text()
-      const htmlErrorTitleMatch = text.match(/<title>(.*)<\/title>/)
-      let errorTitle = htmlErrorTitleMatch ? htmlErrorTitleMatch[1] : null
-      if (errorTitle) {
+    if (baseUrl.endsWith("/")) {
+      throw new Error(`baseUrl must not end in /`)
+    }
+
+    /**
+     *
+     */
+    async function call<Props extends JSONObject, Response extends JSONObject>(
+      path: string,
+      props: Props
+    ): Promise<Response> {
+      const url = `${baseUrl}/${path}`
+      const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(props),
+        headers: { "Content-Type": "application/json" },
+      })
+      if (res.ok) {
         /**
-         * If we can extract the title from the text which is, presumably HTML,
-         * then throw an error with just the title.
+         * If the fetch is successful, return the data
          */
-        throw new Error(errorTitle)
+        const json = await res.json()
+        return json as Response
       } else {
-        /**
-         * If we can't find the title, for the time being, just dump everything
-         * but if it is HTML, it is going to look really messy because we will
-         * be seeing unparsed HTML code.
-         */
-        throw new Error(text)
+        handleErrorResponse({ path, url, props })
+        const text = await res.text()
+        const htmlErrorTitleMatch = text.match(/<title>(.*)<\/title>/)
+        let errorTitle = htmlErrorTitleMatch ? htmlErrorTitleMatch[1] : null
+        if (errorTitle) {
+          /**
+           * If we can extract the title from the text which is, presumably HTML,
+           * then throw an error with just the title.
+           *
+           * NOTE: We keep the following comment as `//` so that it displays
+           * in the source code listing in the browser because it is very
+           * close to the `throw new Error` code.
+           */
+          // Response not `ok` like 404 or 403 response
+          throw new Error(errorTitle)
+        } else {
+          /**
+           * If we can't find the title, for the time being, just dump everything
+           * but if it is HTML, it is going to look really messy because we will
+           * be seeing unparsed HTML code.
+           */
+          throw new Error(text)
+        }
       }
     }
-  }
-
-  /**
-   * Create the getServerSideProps method
-   *
-   * @param fn
-   */
-  export function getServerSideProps<T>(
-    fn: (context: GetServerSidePropsContext<ParsedUrlQuery>) => Promise<T>
-  ): GetServerSideProps<T> {
-    const generatedFn: GetServerSideProps<T, ParsedUrlQuery> = async function (
-      context
-    ) {
-      const response = await fn(context)
-      return { props: response }
-    }
-    return generatedFn
-  }
-
-  /**
-   * Create the Page default export
-   *
-   * @param fn
-   */
-  export function Page<T>(fn: (props: InferGetServerSidePropsType<T>) => any) {
-    return fn
+    return { call }
   }
 }
