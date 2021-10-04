@@ -1,15 +1,16 @@
 import { APIProps, APIResponse } from "~/pages/api/crash"
-import { client } from "~/lib/client"
-import { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import { Client, Web } from "~/src"
 
-export const getServerSideProps: GetServerSideProps = async function () {
+export const client = Client.create(process.env.NEXT_PUBLIC_API_URL)
+
+export const getServerSideProps = Web.getServerSideProps(async function () {
   const res = await client.call<APIProps, APIResponse>("api/crash", {
     username: "johndoe",
   })
   return { props: res }
-}
+})
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>
+type Props = Web.Props<typeof getServerSideProps>
 
 export default function Page(props: Props) {
   console.log(props)

@@ -27,6 +27,9 @@ export namespace API {
     MethodType extends (req: any, res: any) => Promise<JSONObject>
   > = Unpromise<ReturnType<MethodType>>
 
+  /**
+   * Create a method
+   */
   export function method<APIResponse>(fn: Method<APIResponse>) {
     return async function (req: NextApiRequest, res: NextApiResponse) {
       /**
