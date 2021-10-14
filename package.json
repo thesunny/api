@@ -1,6 +1,6 @@
 {
   "name": "@thesunny/api",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "main": "dist/src/server/index.js",
@@ -12,7 +12,8 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "jsome": "^2.5.0"
+    "jsome": "^2.5.0",
+    "pretty-error": "^3.0.4"
   },
   "peerDependencies": {
     "next": "^11.1.2"
