@@ -1,12 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { JSONObject } from "~/lib/json-types"
-import { Unpromise } from "~/lib/ts-utils"
+import { JsonObject, PromiseValue } from "type-fest"
 import { log } from "./log"
 
 let lastId = 0
 
 type Method<Response> = (
-  props: JSONObject,
+  props: JsonObject,
   req: NextApiRequest,
   res: NextApiResponse
 ) => Promise<Response>
@@ -24,8 +23,8 @@ export namespace API {
    * so that it can be extracted using this `APIResponse` type.
    */
   export type Response<
-    MethodType extends (req: any, res: any) => Promise<JSONObject>
-  > = Unpromise<ReturnType<MethodType>>
+    MethodType extends (req: any, res: any) => Promise<JsonObject>
+  > = PromiseValue<ReturnType<MethodType>>
 
   /**
    * Create a method

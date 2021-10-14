@@ -1,16 +1,16 @@
-import { JSONObject } from "~/lib/json-types"
+import { JsonObject } from "type-fest"
 
 /**
  * A successful JSend response. Importantly, the data returns must be a
- * JSONObject.
+ * JsonObject.
  */
-export type JSendSuccess = { status: "success"; data: JSONObject }
+export type JSendSuccess = { status: "success"; data: JsonObject }
 
 /**
  * A structured or predictable fail where we return information about the
  * failure.
  */
-export type JSendFail = { status: "fail"; data: JSONObject }
+export type JSendFail = { status: "fail"; data: JsonObject }
 
 /**
  * This shouldn't happen normally.

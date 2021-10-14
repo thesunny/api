@@ -1,5 +1,5 @@
 import { handleErrorResponse } from "./handle-error"
-import { JSONObject } from "~/lib/json-types"
+import { JsonObject } from "type-fest"
 
 export namespace Client {
   /**
@@ -19,7 +19,7 @@ export namespace Client {
      * @param path string that should not start with a '/'
      * @param props JSON object
      */
-    async function call<Props extends JSONObject, Response extends JSONObject>(
+    async function call<Props extends JsonObject, Response extends JsonObject>(
       path: string,
       props: Props
     ): Promise<Response> {

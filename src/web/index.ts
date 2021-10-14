@@ -1,4 +1,4 @@
-import { JSONObject } from "~/lib/json-types"
+import { JsonObject } from "type-fest"
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
 import { ParsedUrlQuery } from "querystring"
 
@@ -19,7 +19,7 @@ export namespace Web {
    * )
    * ```
    */
-  export function getServerSideProps<RJ extends JSONObject>(
+  export function getServerSideProps<RJ extends JsonObject>(
     fn: (context: GetServerSidePropsContext) => Promise<{ props: RJ }>
   ) {
     return fn
