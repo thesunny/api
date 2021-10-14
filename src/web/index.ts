@@ -47,6 +47,11 @@ export namespace Web {
    * instead. It won't return the proper type because it takes a generic and
    * if you don't provide it, defaults to something like `any`.
    *
+   * WARNING:
+   *
+   * Recommend not using this directly. Use `getServerSideProps` instead as it
+   * will type the return value.
+   *
    * Usage:
    * ```ts
    * export const async function (context: Web.Context) {
