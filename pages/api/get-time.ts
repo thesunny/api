@@ -1,6 +1,5 @@
-import { API } from "~/src/api"
+import { jsend, API } from "~/src"
 import * as s from "superstruct"
-import { jsend } from "~/src/jsend"
 
 const APIProps = s.object({
   username: s.string(),

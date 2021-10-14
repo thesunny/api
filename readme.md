@@ -25,9 +25,8 @@ You will feel a need to improve this API. Most likely, you don't want to. There 
 ## Define an API method
 
 ```ts
-import { API } from "@thesunny/api"
+import { API, jsend } from "@thesunny/api"
 import * as s from "superstruct"
-import { jsend } from "@thesunny/api/jsend"
 
 const Props = s.object({})
 
