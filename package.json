@@ -12,8 +12,7 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "jsome": "^2.5.0",
-    "pretty-error": "^3.0.4"
+    "jsome": "^2.5.0"
   },
   "peerDependencies": {
     "next": "^11.1.2"
