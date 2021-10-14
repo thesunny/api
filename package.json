@@ -1,14 +1,11 @@
 {
   "name": "@thesunny/api",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
-  "main": "dist/src/server/index.js",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.t.ts",
   "files": [
-    "client.js",
-    "client.d.ts",
-    "server.js",
-    "server.d.ts",
     "dist/**/*"
   ],
   "dependencies": {
