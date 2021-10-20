@@ -1,11 +1,9 @@
 import { Web } from "~/src"
 
-export async function getServerSideProps(context: Web.Context) {
+export const getServerSideProps = Web.getServerSideProps(async (context) => {
   return { props: {} }
-}
+})
 
-type Props = Web.Props<typeof getServerSideProps>
-
-export default function Page(props: Props) {
+export default Web.Page<typeof getServerSideProps>((props) => {
   return <div>Hello</div>
-}
+})

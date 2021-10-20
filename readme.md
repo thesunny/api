@@ -4,9 +4,7 @@ A featherweight API abstraction and browser client in a few KB for Next.js with 
 
 ## Design Decisions
 
-You will feel a need to improve this API. Most likely, you don't want to. There are good reasons why the API is designed this way. Here are a few:
-
-- Next.js gets upgraded frequently so we try not to build up on Next.js methods and types
+- Next.js gets upgraded frequently so we try not to build on top of Next.js methods and types
 - The `Client` method is unrelated to Next.js. It actually doesn't have any Next.js integration which keeps it clean.
 - The `API.method` function is as minimal as possible. Here's some thoughts on its design:
 - - **Get Response Type**: It does all you to get the `Response` type for consumption by the client using `API.Response`.

@@ -10,13 +10,23 @@ export const getServerSideProps = Web.getServerSideProps(async (context) => {
   return { props: response.data }
 })
 
-export default function Page({
-  username,
-  serverTime,
-}: Web.Props<typeof getServerSideProps>) {
-  return (
-    <div>
-      Hello World {username}. It's {serverTime}ms since epoch.
-    </div>
-  )
-}
+// export default function Page({
+//   username,
+//   serverTime,
+// }: Web.Props<typeof getServerSideProps>) {
+//   return (
+//     <div>
+//       Hello World {username}. It's {serverTime}ms since epoch.
+//     </div>
+//   )
+// }
+
+export default Web.Page<typeof getServerSideProps>(
+  ({ username, serverTime }) => {
+    return (
+      <div>
+        Hello World {username}. It's {serverTime}ms since epoch.
+      </div>
+    )
+  }
+)

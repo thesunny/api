@@ -1,5 +1,10 @@
 import { JsonObject } from "type-fest"
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next"
 import { ParsedUrlQuery } from "querystring"
 
 export namespace Web {
@@ -18,9 +23,27 @@ export namespace Web {
    *   }
    * )
    * ```
+   *
+   * Degine `getServerSideProps` function
+   *
+   * - types the `context` argument
+   * - ensures returned value is a Promise
+   * - ensures returnes value is a `JsonObject`
    */
   export function getServerSideProps<RJ extends JsonObject>(
     fn: (context: GetServerSidePropsContext) => Promise<{ props: RJ }>
+  ) {
+    return fn
+  }
+
+  /**
+   * Define the default export of a Page.
+   *
+   * - types the `props` argument using `typeof getServerSideProps` in generic
+   * - ensures returned value is valid (React Element or null)
+   */
+  export function Page<GP extends GetServerSideProps>(
+    fn: NextPage<InferGetServerSidePropsType<GP>>
   ) {
     return fn
   }
