@@ -1,4 +1,4 @@
-# @thesunny/api
+# @thesunny/api2
 
 A featherweight API abstraction and browser client in a few KB for Next.js with end-to-end TypeScript typing, colorful API call/response logging, and type validation on the API server to ensure you are getting the right data types.
 
