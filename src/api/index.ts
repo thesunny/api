@@ -22,9 +22,8 @@ export namespace API {
    * This is because `createMethod` explicitly returns the `response` as well
    * so that it can be extracted using this `APIResponse` type.
    */
-  export type Response<
-    MethodType extends (req: any, res: any) => Promise<JsonObject>
-  > = PromiseValue<ReturnType<MethodType>>
+  export type Response<T extends (req: any, res: any) => Promise<JsonObject>> =
+    PromiseValue<ReturnType<T>>
 
   /**
    * Create a method
@@ -64,7 +63,25 @@ export namespace API {
         const error = e as Error
         log.error(id, error)
         res.status(500).send(error.stack)
-        throw error
+        /**
+         * NOTE:
+         * The response from this function card is always discarded; however,
+         * the type of the response is used. If we don't call return here,
+         * then the signature of this function will return the response or
+         * `undefined` which is not what we want for the signature.
+         *
+         * So we fudge this by telling TypeScript, incorrectly, that it will
+         * never hit this code.
+         *
+         * It doesn't affect operation though (since the return value is never
+         * used) but it will allow us to easily get the response type for
+         * this function.
+         *
+         * Another way you may be tempted to try is to throw an Error, however,
+         * depending on the verison of Next, this may stop the server from
+         * functioning at all which is not what we want.
+         */
+        return null as never
       }
     }
   }

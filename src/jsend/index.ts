@@ -49,23 +49,27 @@ export type JSendObject = JSendSuccess | JSendFail | JSendError
  * }
  * ```
  */
-export async function jsend<T extends JSendObject>(value: T): Promise<T>
-export async function jsend<T extends JSendObject>(
-  fn: () => Promise<T>
-): Promise<JSendError>
-export async function jsend<T extends JSendObject>(
-  arg: T | (() => Promise<T>)
-): Promise<T | JSendError> {
-  if (typeof arg === "function") {
-    try {
-      return arg()
-    } catch (e) {
-      return {
-        status: "error",
-        message: String(e),
-      }
-    }
-  } else {
-    return arg
-  }
+
+export function jsend<T extends JSendObject>(value: T): T {
+  return value
 }
+// export function jsend<T extends JSendObject>(value: T): T
+// export async function jsend<T extends JSendObject>(
+//   fn: () => Promise<T>
+// ): Promise<JSendError>
+// export async function jsend<T extends JSendObject>(
+//   arg: T | (() => Promise<T>)
+// ): Promise<T | JSendError> {
+//   if (typeof arg === "function") {
+//     try {
+//       return arg()
+//     } catch (e) {
+//       return {
+//         status: "error",
+//         message: String(e),
+//       }
+//     }
+//   } else {
+//     return arg
+//   }
+// }
