@@ -36,7 +36,32 @@ export type JSendObject = JSendSuccess | JSendFail | JSendError
  *   return jsend({ status: 'success', data: { value: 100 } })
  * }
  * ```
+ *
+ * Alternatively, we can add error checking to a function which will return
+ * the error message:
+ *
+ * ```js
+ * function getSomething(status: number) {
+ *   return jsend(() => {
+ *     if (status == 404) throw new Error("Error")
+ *     return { status: 'success', data: { value: 100 } }
+ *   })
+ * }
+ * ```
  */
-export function jsend<T extends JSendObject>(jsendObject: T): T {
-  return jsendObject
+export async function jsend<T extends JSendObject>(
+  arg: T | (() => Promise<T>)
+): Promise<T | JSendError> {
+  if (typeof arg === "function") {
+    try {
+      return arg()
+    } catch (e) {
+      return {
+        status: "error",
+        message: String(e),
+      }
+    }
+  } else {
+    return arg
+  }
 }
