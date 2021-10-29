@@ -1,6 +1,6 @@
 {
   "name": "@thesunny/api2",
-  "version": "2.0.8",
+  "version": "2.0.10",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "main": "dist/src/index.js",
@@ -28,6 +28,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json && echo 'Finished Building'",
     "prepublish": "yarn build && yarn version:patch && echo '\"npm publish\" to publish to npm'",
+    "publish": "npm publish --access=public",
     "start:dev": "next dev -p 5000",
     "version:patch": "yarn version --patch"
   }
