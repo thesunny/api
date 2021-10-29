@@ -1,6 +1,9 @@
 import { APIProps, APIResponse } from "~/pages/api/crash"
 import { Client, Web } from "~/src"
 
+if (process.env.NEXT_PUBLIC_API_URL == null)
+  throw new Error(`Expected process.env.NEXT_PUBLIC_API_URL to be defined`)
+
 export const client = Client.create(process.env.NEXT_PUBLIC_API_URL)
 
 export async function getServerSideProps(props: Web.Context) {

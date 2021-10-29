@@ -49,6 +49,10 @@ export type JSendObject = JSendSuccess | JSendFail | JSendError
  * }
  * ```
  */
+export async function jsend<T extends JSendObject>(value: T): Promise<T>
+export async function jsend<T extends JSendObject>(
+  fn: () => Promise<T>
+): Promise<JSendError>
 export async function jsend<T extends JSendObject>(
   arg: T | (() => Promise<T>)
 ): Promise<T | JSendError> {
