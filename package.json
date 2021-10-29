@@ -1,6 +1,6 @@
 {
   "name": "@thesunny/api2",
-  "version": "2.0.22",
+  "version": "2.0.23",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "main": "dist/src/index.js",
@@ -9,6 +9,7 @@
     "dist/**/*"
   ],
   "dependencies": {
+    "is-plain-object": "^5.0.0",
     "jsome": "^2.5.0",
     "map-obj": "^5.0.0",
     "type-fest": "^2.5.2"
