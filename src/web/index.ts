@@ -34,14 +34,17 @@ export namespace Web {
   /**
    * Shortcut to redirect from inside `getServerSideProps`
    */
-  export function redirect(destination: string, permanent: boolean = false) {
+  export function redirect(
+    destination: string,
+    permanent: boolean = false
+  ): never {
     throw new Response({ redirect: { destination, permanent } })
   }
 
   /**
    * Shrotcut to return a not found inside `getServerSideProps`
    */
-  export function notFound() {
+  export function notFound(): never {
     throw new Response({ notFound: true })
   }
 
