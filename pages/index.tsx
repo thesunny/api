@@ -20,6 +20,64 @@ export default function Page() {
           line-height: 1.4;
         }
       `}</style>
+
+      <h1>getServerSideProps</h1>
+      <h2>Pages</h2>
+      <ul>
+        <li>
+          <Link href="gssp/time">
+            <a>Time</a>
+          </Link>
+          : Get the time on the server
+        </li>
+        <li>
+          <Link href="redirect">
+            <a>Don't Redirect</a>
+          </Link>
+          : Change query param so same page does not redirect
+        </li>
+        {/* <li>
+          <Link href="not-found?notFound=true">
+            <a>Page Not Found</a>
+          </Link>
+          : Use <code>throw new Web.Response</code> to return a page not found
+        </li>
+        <li>
+          <Link href="not-found">
+            <a>Not Page Not Found</a>
+          </Link>
+          : Change query param so same page does not return page not found
+        </li> */}
+      </ul>
+      <h2>Throw new Web.Response</h2>
+      <ul>
+        <li>
+          <Link href="redirect?redirect=true">
+            <a>Redirect</a>
+          </Link>
+          : Use <code>throw new Web.Response</code> to redirect in
+          getServerSideProps.
+        </li>
+        <li>
+          <Link href="redirect">
+            <a>Don't Redirect</a>
+          </Link>
+          : Change query param so same page does not redirect
+        </li>
+        <li>
+          <Link href="not-found?notFound=true">
+            <a>Page Not Found</a>
+          </Link>
+          : Use <code>throw new Web.Response</code> to return a page not found
+        </li>
+        <li>
+          <Link href="not-found">
+            <a>Not Page Not Found</a>
+          </Link>
+          : Change query param so same page does not return page not found
+        </li>
+      </ul>
+      <h1>API</h1>
       <h2>Success</h2>
       <ul>
         <li>

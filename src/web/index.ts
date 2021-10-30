@@ -2,14 +2,50 @@ import { JsonObject } from "type-fest"
 import {
   GetServerSideProps,
   GetServerSidePropsContext,
+  GetServerSidePropsResult,
   InferGetServerSidePropsType,
   NextPage,
 } from "next"
 import { ParsedUrlQuery } from "querystring"
+import { PromiseValue } from "type-fest"
 
 export namespace Web {
   /**
+   * Create this `Response` object and throw it in `getServerSideProps` in
+   * order to do a redirect from anywhere.
+   *
+   * ```
+   * throw new Web.Response({redirect: { destination: '/', permanent: false })
+   * ```
+   *
+   * The benefit of throwing it is that it won't become part of the return
+   * value of the function passed in making it easier to get the types of the
+   * props.
+   */
+  export class Response {
+    readonly value: GetServerSidePropsResult<never>
+    constructor(value: GetServerSidePropsResult<never>) {
+      this.value = value
+    }
+  }
+
+  /**
+   * Shortcut to redirect from inside `getServerSideProps`
+   */
+  export function redirect(destination: string, permanent: boolean = false) {
+    throw new Response({ redirect: { destination, permanent } })
+  }
+
+  /**
+   * Shrotcut to return a not found inside `getServerSideProps`
+   */
+  export function notFound() {
+    throw new Response({ notFound: true })
+  }
+
+  /**
    * WARNING:
+   *
    * Do not remove this method and use the `GetServerSideProps` type from
    * `next` instead. It won't return the proper type because it takes a
    * generic and if you don't explicitly define it, it won't figure it out
@@ -24,7 +60,7 @@ export namespace Web {
    * )
    * ```
    *
-   * Degine `getServerSideProps` function
+   * The `getServerSideProps` function
    *
    * - types the `context` argument
    * - ensures returned value is a Promise
@@ -33,7 +69,17 @@ export namespace Web {
   export function getServerSideProps<RJ extends JsonObject>(
     fn: (context: GetServerSidePropsContext) => Promise<{ props: RJ }>
   ) {
-    return fn
+    return async function getServerSideProps(
+      context: GetServerSidePropsContext
+    ) {
+      try {
+        return await fn(context)
+      } catch (e) {
+        if (e instanceof Response) {
+          return e.value
+        }
+      }
+    }
   }
 
   /**
