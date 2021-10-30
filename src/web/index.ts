@@ -97,7 +97,7 @@ export namespace Web {
         if (e instanceof Response) {
           return e.value
         } else {
-          log.error(id, e)
+          log.error(id, e as Error)
           throw e
         }
       }
