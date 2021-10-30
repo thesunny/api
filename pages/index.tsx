@@ -31,10 +31,10 @@ export default function Page() {
           : Get the time on the server
         </li>
         <li>
-          <Link href="redirect">
-            <a>Don't Redirect</a>
+          <Link href="gssp/throw-error">
+            <a>Throw Error</a>: Throw in error in the getServerSideProps
+            function
           </Link>
-          : Change query param so same page does not redirect
         </li>
         {/* <li>
           <Link href="not-found?notFound=true">

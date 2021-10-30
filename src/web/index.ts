@@ -7,7 +7,9 @@ import {
   NextPage,
 } from "next"
 import { ParsedUrlQuery } from "querystring"
-import { PromiseValue } from "type-fest"
+import { log } from "../api/log"
+
+let lastId = 0
 
 export namespace Web {
   /**
@@ -72,11 +74,31 @@ export namespace Web {
     return async function getServerSideProps(
       context: GetServerSidePropsContext
     ) {
+      /**
+       * Keep track of the current `id` so that when we `console.log` details
+       * of the execution, we can match the start of the request with the end.
+       */
+      lastId++
+      const id = lastId
       try {
-        return await fn(context)
+        const startTime = new Date().getTime()
+
+        log.request(id, {
+          query: context.query,
+          params: context.params,
+        })
+        const response = await fn(context)
+
+        const diff = new Date().getTime() - startTime
+        log.response(id, diff, response)
+
+        return response
       } catch (e) {
         if (e instanceof Response) {
           return e.value
+        } else {
+          log.error(id, e)
+          throw e
         }
       }
     }
