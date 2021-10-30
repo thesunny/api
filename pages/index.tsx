@@ -20,7 +20,6 @@ export default function Page() {
           line-height: 1.4;
         }
       `}</style>
-
       <h1>getServerSideProps</h1>
       <h2>Pages</h2>
       <ul>
@@ -31,23 +30,11 @@ export default function Page() {
           : Get the time on the server
         </li>
         <li>
-          <Link href="gssp/throw-error">
-            <a>Throw Error</a>: Throw in error in the getServerSideProps
-            function
+          <Link href="gssp/throw-error?error=true">
+            <a>Throw Error</a>
           </Link>
+          : Throw in error in the getServerSideProps function
         </li>
-        {/* <li>
-          <Link href="not-found?notFound=true">
-            <a>Page Not Found</a>
-          </Link>
-          : Use <code>throw new Web.Response</code> to return a page not found
-        </li>
-        <li>
-          <Link href="not-found">
-            <a>Not Page Not Found</a>
-          </Link>
-          : Change query param so same page does not return page not found
-        </li> */}
       </ul>
       <h2>Throw new Web.Response</h2>
       <ul>
