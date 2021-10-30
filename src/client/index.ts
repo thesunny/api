@@ -28,11 +28,6 @@ export namespace Client {
       const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify(props),
-        /**
-         * Without credentials, cookies aren't sent and API calls won't work
-         * with next-auth.
-         */
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
       })
       if (res.ok) {
