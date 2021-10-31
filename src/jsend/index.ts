@@ -1,4 +1,5 @@
 import { JsonObject } from "type-fest"
+import { DJObject } from "../dj"
 
 /**
  * A successful JSend response. Importantly, the data returns must be a
@@ -53,23 +54,23 @@ export type JSendObject = JSendSuccess | JSendFail | JSendError
 export function jsend<T extends JSendObject>(value: T): T {
   return value
 }
-// export function jsend<T extends JSendObject>(value: T): T
-// export async function jsend<T extends JSendObject>(
-//   fn: () => Promise<T>
-// ): Promise<JSendError>
-// export async function jsend<T extends JSendObject>(
-//   arg: T | (() => Promise<T>)
-// ): Promise<T | JSendError> {
-//   if (typeof arg === "function") {
-//     try {
-//       return arg()
-//     } catch (e) {
-//       return {
-//         status: "error",
-//         message: String(e),
-//       }
-//     }
-//   } else {
-//     return arg
-//   }
-// }
+
+/**
+ * djsend related types and method. Same as `jsend` but accepts `Date` objects
+ * in the `data` payloads.
+ */
+
+export type DJSendSuccess = { status: "success"; data: DJObject }
+
+export type DJSendFail = { status: "fail"; data: DJObject }
+
+export type DJSendError = JSendError
+
+export type DJSendObject = DJSendSuccess | DJSendFail | DJSendError
+
+/**
+ * Like jsend but type checks DJ object instead of JSON object
+ */
+export function djsend<T extends DJSendObject>(value: T): T {
+  return value
+}
