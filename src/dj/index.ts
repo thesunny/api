@@ -116,7 +116,7 @@ export function toJsonValue<T extends DJValue>(value: T): DJToJson<T> {
  * means that `undefined` gets fed back in on a loop.
  */
 // prettier-ignore
-type JsonToDJ<T extends JsonValue | undefined> =
+export type JsonToDJ<T extends JsonValue | undefined> =
   T extends null ? null :
   T extends undefined ? undefined :
   T extends JsonArray ? Array<JsonToDJ<T[number]>> :

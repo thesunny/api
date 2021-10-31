@@ -19,21 +19,33 @@ export default function Page() {
         html * {
           line-height: 1.4;
         }
+        code {
+          background: #e0e0c0;
+          padding: 0 2px;
+          border-radius: 2px;
+        }
       `}</style>
       <h1>getServerSideProps</h1>
       <h2>Pages</h2>
       <ul>
         <li>
-          <Link href="gssp/time">
-            <a>Time</a>
+          <Link href="gssp/time-in-ms">
+            <a>Time in ms</a>
           </Link>
-          : Get the time on the server
+          : Get the time on the server in ms
+        </li>
+        <li>
+          <Link href="gssp/time-as-date">
+            <a>Time as Date</a>
+          </Link>
+          : Get the time on the server as Date object (use DJ library)
         </li>
         <li>
           <Link href="gssp/throw-error?error=true">
             <a>Throw Error</a>
           </Link>
-          : Throw in error in the getServerSideProps function
+          : Throw in error in the getServerSideProps function. Should see
+          `3t6cF` from code comments in the browser error.
         </li>
       </ul>
       <h2>Throw new Web.Response</h2>
@@ -42,8 +54,9 @@ export default function Page() {
           <Link href="redirect?redirect=true">
             <a>Redirect</a>
           </Link>
-          : Use <code>throw new Web.Response</code> to redirect in
-          getServerSideProps.
+          : Use <code>throw new Web.Response</code> to redirect in{" "}
+          <code>getServerSideProps</code>. Should end up at page{" "}
+          <code>/redirect-2</code> instead of <code>/redirect</code>.
         </li>
         <li>
           <Link href="redirect">

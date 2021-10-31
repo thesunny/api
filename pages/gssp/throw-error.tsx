@@ -3,7 +3,10 @@ import Link from "next/link"
 
 export const getServerSideProps = Web.getServerSideProps(async (context) => {
   if (context.query.error) {
-    throw new Error("Oh no!")
+    // This comment should be seen on the browser page `3t6cF`.
+    throw new Error(
+      "This error should show the comment above `3t6cf` in the browser when it throws!"
+    )
   }
   return {
     props: {},

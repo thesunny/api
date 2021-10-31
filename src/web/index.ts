@@ -1,13 +1,15 @@
-import { JsonObject } from "type-fest"
+import { JsonObject, Simplify } from "type-fest"
 import {
   GetServerSideProps,
   GetServerSidePropsContext,
   GetServerSidePropsResult,
   InferGetServerSidePropsType,
   NextPage,
+  NextPageContext,
 } from "next"
 import { ParsedUrlQuery } from "querystring"
 import { log } from "../api/log"
+import { DJ, JsonToDJ, DJObject } from "../dj"
 
 let lastId = 0
 
@@ -71,7 +73,7 @@ export namespace Web {
    * - ensures returned value is a Promise
    * - ensures returnes value is a `JsonObject`
    */
-  export function getServerSideProps<RJ extends JsonObject>(
+  export function getServerSideProps<RJ extends DJObject>(
     fn: (context: GetServerSidePropsContext) => Promise<{ props: RJ }>
   ) {
     return async function getServerSideProps(
@@ -90,12 +92,13 @@ export namespace Web {
           query: context.query,
           params: context.params,
         })
-        const response = await fn(context)
+        const djResponse = await fn(context)
+        const jsonResponse = { props: DJ.toJsonValue(djResponse.props) }
 
         const diff = new Date().getTime() - startTime
-        log.response(id, diff, response)
+        log.response(id, diff, jsonResponse)
 
-        return response
+        return jsonResponse
       } catch (e) {
         if (e instanceof Response) {
           return e.value
@@ -110,13 +113,28 @@ export namespace Web {
   /**
    * Define the default export of a Page.
    *
+   * IMPORTANT:
+   * Converts JSON into DJ (JSON with dates). Dates are encoded as
+   * `{ $date: number }` when `Web.getServerSideProps` is executed.
+   *
    * - types the `props` argument using `typeof getServerSideProps` in generic
    * - ensures returned value is valid (React Element or null)
    */
   export function Page<GP extends GetServerSideProps>(
-    fn: NextPage<InferGetServerSidePropsType<GP>>
+    fn: NextPage<JsonToDJ<InferGetServerSidePropsType<GP>>>
   ) {
-    return fn
+    const PageWithJsonProps: NextPage<InferGetServerSidePropsType<GP>> =
+      function ({ children, ...jsonProps }) {
+        const djProps = DJ.fromJsonValue(jsonProps)
+        /**
+         * I'm fairly confident this works but it has been challenging to get
+         * the type issues to disappear.
+         */
+        // @ts-ignore
+        return fn({ children, ...djProps })
+      }
+
+    return PageWithJsonProps
   }
 
   /**
