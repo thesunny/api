@@ -1,30 +1,6 @@
 import { toJsonValue, fromJsonValue, DJToJson } from ".."
 import { AssertType } from "@thesunny/assert-type"
 
-/**
- * If the two types are equal (either type can extends from the other type in
- * either direction) then return a type of `true` and otherwise a type of
- * `false`
- *
- * <https://github.com/Microsoft/TypeScript/issues/27024#issuecomment-509504856>
- *
- * Use this to check for type equality
- *
- * const a: IsEqual<{a: string}, {a: string}> = true
- * const a: IsEqual<{a: string}, {a: number}> = false
- *
- * Which in this case will show an error
- */
-// prettier-ignore
-export type IsEqual<A, B, Y = true, N = false> =
-  (<T>() => T extends A ? 1 : 2) extends
-  (<T>() => T extends B ? 1 : 2) ? Y : N
-
-// prettier-ignore
-// export function AssertType.Equal<A, B>(value: IsEqual<A, B>): B {
-//   return {} as B
-// }
-
 const DATE_MS = 946713600000
 
 describe("ejson", () => {
@@ -38,22 +14,28 @@ describe("ejson", () => {
       expect(json).toEqual({ $date: DATE_MS })
     })
 
-    it("should export 1", async () => {
-      const json = toJsonValue(1 as const)
+    it("should export specific number", async () => {
+      const json = toJsonValue(1)
       expect(json).toEqual(1)
       AssertType.Equal<typeof json, 1>(true)
     })
 
     it("should export number", async () => {
-      const json = toJsonValue(1)
+      const json = toJsonValue(1 as number)
       expect(json).toEqual(1)
       AssertType.Equal<typeof json, number>(true)
+    })
+
+    it("should export specific string", async () => {
+      const json = toJsonValue("abc")
+      expect(json).toEqual("abc")
+      AssertType.Equal<typeof json, "abc">(true)
     })
 
     it("should export string", async () => {
       const json = toJsonValue("abc")
       expect(json).toEqual("abc")
-      AssertType.Equal<typeof json, string>(true)
+      AssertType.Equal<typeof json, "abc">(true)
     })
 
     it("should export boolean", async () => {
