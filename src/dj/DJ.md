@@ -1,27 +1,12 @@
 # DJ (Date Json)
 
-**WORKING ON THIS**
+DJ allows us to create a new type like JSON but allows for a `Date` type. The purpose is to allow us to easily work with database records which often contain `Date` types in them.
 
-Need a way or `djsend` to return an Object that has been converted to a
-`JSON` object and then for that return value to raise a type error when
-passed into `Web.getServerSideProps`.
+It works by converting any dates to `{ $date: number }` where the `number` is the number of ms since epoch as retrieved by `date.getTime()`. It does this in the method `DJ.toJsonValue`.
 
-The likely solution is
+It reverse this in `DJ.fromJsonValue`
 
-- [ ] It needs to deeply convert any Interface to a Type like `IUser`
-- [ ] It needs to be in a format that will not be acceptable to the single function argument in GSSP
-
-Or...
-
-- [ ] Even better is if we could have the argument passed into `djsend` show a type error but I think this is hard because we can't convert a type to an interface easily while checking for extends.
-
----
-
-The Date Json library allows us to convert JSON objects that additional may contain Date values into plain JSON objects and back again.
-
-The purpose of the DJ library is to allow us to transfer database records which contain dates from the server to the client. This is important because without DJ, we have to manually ensure that our date values are converted into JSON values which can be time-consuming considering that most database records contain one or more Date values (e.g. `createdAt` and `updatedAt`)
-
-## Approaches
+## DJ vs Dedate
 
 There are two library based approaches we can take:
 
