@@ -19,5 +19,9 @@
     "strict": true,
     "typeRoots": ["./types", "./node_modules/@types"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  /**
+   * Exclude `*.test.ts` files because they are not part of the output.
+   */
+  "exclude": ["**/*.test.ts", "**/test/**/*"]
 }

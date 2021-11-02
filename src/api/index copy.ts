@@ -4,6 +4,12 @@ import { log } from "./log"
 
 let lastId = 0
 
+type Method<Response> = (
+  props: JsonObject,
+  req: NextApiRequest,
+  res: NextApiResponse
+) => Promise<Response>
+
 export namespace API {
   /**
    * Takes a function created using `createMethod` and extracts the return
@@ -20,18 +26,9 @@ export namespace API {
     PromiseValue<ReturnType<T>>
 
   /**
-   * Defines a valid API method function to be passed in.
-   */
-  type Method<Response extends JsonObject> = (
-    props: JsonObject,
-    req: NextApiRequest,
-    res: NextApiResponse
-  ) => Promise<Response>
-
-  /**
    * Create a method
    */
-  export function method<R extends JsonObject>(fn: Method<R>) {
+  export function method<APIResponse>(fn: Method<APIResponse>) {
     return async function (req: NextApiRequest, res: NextApiResponse) {
       /**
        * Keep track of the current `id` so that when we `console.log` details

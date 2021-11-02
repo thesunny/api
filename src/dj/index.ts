@@ -1,4 +1,11 @@
-import { JsonArray, JsonObject, JsonPrimitive, JsonValue } from "type-fest"
+import {
+  JsonArray,
+  JsonObject,
+  JsonPrimitive,
+  JsonValue,
+  Simplify,
+} from "type-fest"
+import { AssertType } from "@thesunny/assert-type"
 
 /**
  * DJ Overview
@@ -21,6 +28,11 @@ import { JsonArray, JsonObject, JsonPrimitive, JsonValue } from "type-fest"
 
 /**
  * Matches a DJ object.
+ *
+ * The declaration `[Key in string]` is different from `[Key: string]` in
+ * subtle and hard to understand ways:
+ *
+ * https://stackoverflow.com/questions/56960841/are-the-types-key-in-string-boolean-and-key-string-boolean
  */
 export type DJObject = { [Key in string]?: DJValue }
 
@@ -72,8 +84,9 @@ export type DJToJson<T extends DJValue | undefined> =
   T extends Date ? { $date: number } :
   T extends DJPrimitive ? T :
   T extends DJArray ? Array<DJToJson<T[number]>> :
-  T extends DJObject ? { [key in keyof T]: DJToJson<T[key]> } :
-  never
+  T extends Function ? T :
+  T extends object ? { [key in keyof T]: DJToJson<T[key]> } :
+  T
 
 /**
  * We use `any` here a lot because it doesn't seem to work without
@@ -84,7 +97,9 @@ export type DJToJson<T extends DJValue | undefined> =
  * extra code that is completely unnecessary, not helpful and might impact
  * performance.
  */
-export function toJsonValue<T extends DJValue>(value: T): DJToJson<T> {
+// export function toJsonValue<T extends DJValue>(value: T): DJToJson<T> {
+export function toJsonValue<T>(value: T): DJToJson<T> {
+  // ): T extends DJSafe<T> ? DJToJson<DJSafe<T>> : never {
   if (value === null) {
     return value as any
   } else if (value instanceof Date) {
@@ -105,8 +120,12 @@ export function toJsonValue<T extends DJValue>(value: T): DJToJson<T> {
       obj[key] = toJsonValue(value[key])
     }
     return obj as any
-  } else {
+  } else if (
+    ["string", "number", "boolean", "undefined"].includes(typeof value)
+  ) {
     return value as any
+  } else {
+    throw new Error(`Type ${typeof value} is not a valid DJ value`)
   }
 }
 
@@ -161,9 +180,30 @@ export function fromJsonValue<T extends JsonValue>(value: T): JsonToDJ<T> {
       }
       return obj as any //{ [key in keyof T]: T[key] }
     }
-  } else {
+  } else if (
+    ["string", "number", "boolean", "undefined"].includes(typeof value)
+  ) {
     return value as any
+  } else {
+    throw new Error(`Type ${typeof value} is not a valid DJ value`)
   }
 }
 
 export const DJ = { toJsonValue, fromJsonValue }
+
+// // prettier-ignore
+// export type DJSafe<T> =
+//   T extends null ? null :
+//   T extends Date ? Date :
+//   T extends Function ? never :
+//   /**
+//    * WARNING:
+//    * I can't remember why Arrays just work here. I mean I have no code dealing
+//    * with it. I do remember that I had encountered this before but I can't
+//    * find any documentation referring to it.
+//    *
+//    * If I know in the future, make sure I document it here.
+//    */
+//   T extends { [key: string]: any } ? { [key in keyof T]: DJSafe<T[key]> } :
+//   T extends DJPrimitive ? T :
+//   never

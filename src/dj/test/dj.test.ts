@@ -1,4 +1,5 @@
 import { toJsonValue, fromJsonValue, DJToJson } from ".."
+import { AssertType } from "@thesunny/assert-type"
 
 /**
  * If the two types are equal (either type can extends from the other type in
@@ -20,9 +21,9 @@ export type IsEqual<A, B, Y = true, N = false> =
   (<T>() => T extends B ? 1 : 2) ? Y : N
 
 // prettier-ignore
-export function assertTypeEqual<A, B>(value: IsEqual<A, B>): B {
-  return {} as B
-}
+// export function AssertType.Equal<A, B>(value: IsEqual<A, B>): B {
+//   return {} as B
+// }
 
 const DATE_MS = 946713600000
 
@@ -33,51 +34,51 @@ describe("ejson", () => {
       const json = toJsonValue(value)
 
       expect(value).toBeInstanceOf(Date)
-      assertTypeEqual<typeof json, { $date: number }>(true)
+      AssertType.Equal<typeof json, { $date: number }>(true)
       expect(json).toEqual({ $date: DATE_MS })
     })
 
     it("should export 1", async () => {
-      const json = toJsonValue(1)
+      const json = toJsonValue(1 as const)
       expect(json).toEqual(1)
-      assertTypeEqual<typeof json, 1>(true)
+      AssertType.Equal<typeof json, 1>(true)
     })
 
     it("should export number", async () => {
-      const json = toJsonValue(1 as number)
+      const json = toJsonValue(1)
       expect(json).toEqual(1)
-      assertTypeEqual<typeof json, number>(true)
+      AssertType.Equal<typeof json, number>(true)
     })
 
     it("should export string", async () => {
-      const json = toJsonValue("abc" as string)
+      const json = toJsonValue("abc")
       expect(json).toEqual("abc")
-      assertTypeEqual<typeof json, string>(true)
+      AssertType.Equal<typeof json, string>(true)
     })
 
     it("should export boolean", async () => {
       const json = toJsonValue(true as boolean)
       expect(json).toEqual(true)
-      assertTypeEqual<typeof json, boolean>(true)
+      AssertType.Equal<typeof json, boolean>(true)
     })
 
     it("should export null", async () => {
       const json = toJsonValue(null as null)
       expect(json).toEqual(null)
-      assertTypeEqual<typeof json, null>(true)
+      AssertType.Equal<typeof json, null>(true)
     })
 
     it("should export objects with date", async () => {
       const djson = { at: new Date("January 1, 2000") }
       const json = toJsonValue(djson)
-      assertTypeEqual<typeof json, { at: { $date: number } }>(true)
+      AssertType.Equal<typeof json, { at: { $date: number } }>(true)
       expect(json).toEqual({ at: { $date: DATE_MS } })
     })
 
     it("should export arrays with date", async () => {
       const djson = [new Date("January 1, 2000")]
       const json = toJsonValue(djson)
-      assertTypeEqual<typeof json, Array<{ $date: number }>>(true)
+      AssertType.Equal<typeof json, Array<{ $date: number }>>(true)
       expect(json).toEqual([{ $date: DATE_MS }])
     })
 
@@ -91,7 +92,7 @@ describe("ejson", () => {
        * property.
        */
       type T = DJToJson<{ $date: any }>
-      assertTypeEqual<T, never>(true)
+      AssertType.Equal<T, never>(true)
     })
 
     it("should disallow the key $date in an object", async () => {
@@ -110,7 +111,7 @@ describe("ejson", () => {
           a: [{ at: new Date(DATE_MS) }],
         },
       ])
-      assertTypeEqual<
+      AssertType.Equal<
         typeof value,
         {
           at: { $date: number }
@@ -136,44 +137,44 @@ describe("ejson", () => {
       const value = fromJsonValue(json)
 
       expect(value).toBeInstanceOf(Date)
-      assertTypeEqual<typeof value, Date>(true)
+      AssertType.Equal<typeof value, Date>(true)
       expect(value.getTime()).toEqual(DATE_MS)
     })
 
     it("should import a number", async () => {
       const value = fromJsonValue(1 as number)
       expect(value).toEqual(1)
-      assertTypeEqual<typeof value, number>(true)
+      AssertType.Equal<typeof value, number>(true)
     })
 
     it("should import a string", async () => {
       const value = fromJsonValue("abc" as string)
       expect(value).toEqual("abc")
-      assertTypeEqual<typeof value, string>(true)
+      AssertType.Equal<typeof value, string>(true)
     })
 
     it("should import a boolean", async () => {
       const value = fromJsonValue(true as boolean)
       expect(value).toEqual(true)
-      assertTypeEqual<typeof value, boolean>(true)
+      AssertType.Equal<typeof value, boolean>(true)
     })
 
     it("should import a null", async () => {
       const value = fromJsonValue(null as null)
       expect(value).toEqual(null)
-      assertTypeEqual<typeof value, null>(true)
+      AssertType.Equal<typeof value, null>(true)
     })
 
     it("should import object with date", async () => {
       const value = fromJsonValue({ at: { $date: DATE_MS } })
-      assertTypeEqual<typeof value, { at: Date }>(true)
+      AssertType.Equal<typeof value, { at: Date }>(true)
       expect(value).toEqual({ at: expect.any(Date) })
       expect(value.at.getTime()).toEqual(DATE_MS)
     })
 
     it("should import arrays with date", async () => {
       const value = fromJsonValue([{ $date: DATE_MS }])
-      assertTypeEqual<typeof value, Date[]>(true)
+      AssertType.Equal<typeof value, Date[]>(true)
       expect(value).toEqual([expect.any(Date)])
     })
 
@@ -186,7 +187,7 @@ describe("ejson", () => {
           a: [{ at: { $date: DATE_MS } }],
         },
       ])
-      assertTypeEqual<
+      AssertType.Equal<
         typeof value,
         { at: Date; s: string; n: number; a: { at: Date }[] }[]
       >(true)

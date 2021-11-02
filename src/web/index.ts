@@ -73,8 +73,10 @@ export namespace Web {
    * - ensures returned value is a Promise
    * - ensures returnes value is a `JsonObject`
    */
+  // export function getServerSideProps<RJ extends RJObject>(
   export function getServerSideProps<RJ extends DJObject>(
     fn: (context: GetServerSidePropsContext) => Promise<{ props: RJ }>
+    // ) => Promise<{ props: RJ extends DJSafe<RJ> ? RJ : never }>
   ) {
     return async function getServerSideProps(
       context: GetServerSidePropsContext

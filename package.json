@@ -9,6 +9,7 @@
     "dist/**/*"
   ],
   "dependencies": {
+    "@thesunny/assert-type": "^0.1.7",
     "is-plain-object": "^5.0.0",
     "jsome": "^2.5.0",
     "map-obj": "^5.0.0",
@@ -31,7 +32,7 @@
     "typescript": "^4.4.3"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && echo 'Finished Building'",
+    "build": "rm -rf ./dist/ && tsc -p tsconfig.build.json && echo 'Finished Building'",
     "prepublish": "yarn build && yarn version:patch && echo '\"npm publish --access=public\" to publish to npm'",
     "start:dev": "next dev -p 5000",
     "version:patch": "yarn version --patch",

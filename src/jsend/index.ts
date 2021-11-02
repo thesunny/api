@@ -1,5 +1,5 @@
 import { JsonObject } from "type-fest"
-import { DJObject } from "../dj"
+import { DJObject, DJToJson, toJsonValue } from "../dj"
 
 /**
  * A successful JSend response. Importantly, the data returns must be a
@@ -71,6 +71,6 @@ export type DJSendObject = DJSendSuccess | DJSendFail | DJSendError
 /**
  * Like jsend but type checks DJ object instead of JSON object
  */
-export function djsend<T extends DJSendObject>(value: T): T {
-  return value
+export function djsend<T extends DJObject>(value: T) {
+  return toJsonValue(value)
 }
