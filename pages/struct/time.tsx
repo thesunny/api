@@ -10,7 +10,7 @@ export const getServerSideProps = Web.getServerSideProps(async (context) => {
   const response = await client.structCall<GetTimeMethod>("api/get-time", {
     username: "johndoe",
   })
-  return { props: response.data }
+  return response.data
 })
 
 export default Web.Page<typeof getServerSideProps>(

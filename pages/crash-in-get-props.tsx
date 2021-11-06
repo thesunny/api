@@ -1,6 +1,7 @@
 import { Web } from "~/src"
 
 export async function getServerSideProps(context: Web.Context) {
+  // Should show this comment in the error message displayed in the browser
   throw new Error("Error in getServerSideProps")
   return { props: {} }
 }

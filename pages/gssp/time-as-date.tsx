@@ -1,13 +1,10 @@
 import { AssertType } from "@thesunny/assert-type"
-import { string } from "superstruct"
 import { Web } from "~/src"
 
 export const getServerSideProps = Web.getServerSideProps(async (context) => {
   return {
-    props: {
-      username: "John Doe",
-      serverTime: new Date(),
-    },
+    username: "John Doe",
+    serverTime: new Date(),
   }
 })
 

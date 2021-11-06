@@ -10,7 +10,7 @@ export const getServerSideProps = Web.getServerSideProps(async (context) => {
   const response = await client.call<APIProps, APIResponse>("api/minimal-api", {
     number: 7,
   })
-  return { props: response.data }
+  return response.data
 })
 
 export default function Page({ number }: Web.Props<typeof getServerSideProps>) {

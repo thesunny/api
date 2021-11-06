@@ -10,7 +10,7 @@ export const getServerSideProps = Web.getServerSideProps(async (context) => {
   const response = await client.call<APIProps, APIResponse>("api/get-time", {
     username: "johndoe",
   })
-  return { props: response.data }
+  return response.data
 })
 
 // export default function Page({

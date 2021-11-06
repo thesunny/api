@@ -73,9 +73,8 @@ export namespace Web {
    * - ensures returned value is a Promise
    * - ensures returnes value is a `JsonObject`
    */
-  // export function getServerSideProps<RJ extends RJObject>(
   export function getServerSideProps<RJ extends DJObject>(
-    fn: (context: GetServerSidePropsContext) => Promise<{ props: RJ }>
+    fn: (context: GetServerSidePropsContext) => Promise<RJ>
     // ) => Promise<{ props: RJ extends DJSafe<RJ> ? RJ : never }>
   ) {
     return async function getServerSideProps(
@@ -95,7 +94,7 @@ export namespace Web {
           params: context.params,
         })
         const djResponse = await fn(context)
-        const jsonResponse = { props: DJ.toJsonValue(djResponse.props) }
+        const jsonResponse = { props: DJ.toJsonValue(djResponse) }
 
         const diff = new Date().getTime() - startTime
         log.response(id, diff, jsonResponse)

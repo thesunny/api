@@ -3,10 +3,8 @@ import Link from "next/link"
 
 export const getServerSideProps = Web.getServerSideProps(async (context) => {
   return {
-    props: {
-      username: context.query.user ? context.query.user : "Unspecified User",
-      serverTime: dedate(new Date()),
-    },
+    username: context.query.user ? context.query.user : "Unspecified User",
+    serverTime: dedate(new Date()),
   }
 })
 
