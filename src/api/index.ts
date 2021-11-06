@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { JsonObject, PromiseValue } from "type-fest"
 import { log } from "./log"
+import * as s from "superstruct"
 
 let lastId = 0
 
@@ -86,6 +87,24 @@ export namespace API {
          */
         return null as never
       }
+    }
+  }
+
+  export function structMethod<S extends s.Struct<any>, R extends JsonObject>(
+    struct: S,
+    fn: (
+      props: s.Infer<S>,
+      req: NextApiRequest,
+      res: NextApiResponse
+    ) => Promise<R>
+  ) {
+    const method = API.method(async (jsonProps, req, res) => {
+      const props = struct.create(jsonProps)
+      return await fn(props, req, res)
+    })
+    return method as typeof method & {
+      _Props: s.Infer<S>
+      _Response: PromiseValue<ReturnType<typeof method>>
     }
   }
 }

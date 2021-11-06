@@ -69,6 +69,13 @@ export namespace Client {
         }
       }
     }
-    return { call }
+
+    async function structCall<
+      Method extends { _Props: JsonObject; _Response: JsonObject }
+    >(path: string, props: Method["_Props"]): Promise<Method["_Response"]> {
+      return call(path, props)
+    }
+
+    return { call, structCall }
   }
 }

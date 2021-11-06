@@ -78,7 +78,7 @@ export default function Page() {
         </li>
       </ul>
       <h1>API</h1>
-      <h2>Success</h2>
+      <h2>API.method and client.call</h2>
       <ul>
         <li>
           <Link href="minimal">
@@ -89,6 +89,16 @@ export default function Page() {
         </li>
         <li>
           <Link href="time">
+            <a>Time</a>
+          </Link>
+          : Should show the time from the server. Username is round tripped from
+          client back to web page.
+        </li>
+      </ul>
+      <h2>API.structMethod and client.structCall</h2>
+      <ul>
+        <li>
+          <Link href="/struct/time">
             <a>Time</a>
           </Link>
           : Should show the time from the server. Username is round tripped from
