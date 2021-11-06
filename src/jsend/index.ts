@@ -71,6 +71,6 @@ export type DJSendObject = DJSendSuccess | DJSendFail | DJSendError
 /**
  * Like jsend but type checks DJ object instead of JSON object
  */
-export function djsend<T extends DJObject>(value: T) {
+export function djsend<T extends DJSendObject>(value: T) {
   return toJsonValue(value)
 }
