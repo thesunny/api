@@ -1,3 +1,5 @@
+import { AssertType } from "@thesunny/assert-type"
+import { string } from "superstruct"
 import { Web } from "~/src"
 
 export const getServerSideProps = Web.getServerSideProps(async (context) => {
@@ -8,6 +10,9 @@ export const getServerSideProps = Web.getServerSideProps(async (context) => {
     },
   }
 })
+
+type Props = Web.Props<typeof getServerSideProps>
+AssertType.Equal<Props, { username: string; serverTime: Date }>(true)
 
 export default Web.Page<typeof getServerSideProps>((props) => {
   const { username, serverTime } = props

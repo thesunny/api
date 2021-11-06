@@ -152,7 +152,9 @@ export namespace Web {
    * }
    * ```
    */
-  export type Props<T> = InferGetServerSidePropsType<T>
+  export type Props<T extends GetServerSideProps<JsonObject>> = JsonToDJ<
+    InferGetServerSidePropsType<T>
+  >
 
   /**
    * WARNING!
