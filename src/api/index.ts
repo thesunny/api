@@ -2,10 +2,19 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { JsonObject, PromiseValue } from "type-fest"
 import { log } from "./log"
 import * as s from "superstruct"
+import { DJObject, toJsonValue } from "../dj"
 
 let lastId = 0
 
 export namespace API {
+  export function enableLog() {
+    log.enable()
+  }
+
+  export function disableLog() {
+    log.disable()
+  }
+
   /**
    * Takes a function created using `createMethod` and extracts the return
    * JSON from it.
@@ -30,9 +39,17 @@ export namespace API {
   ) => Promise<Response>
 
   /**
-   * Create a method
+   * Create a raw method that doesn't check the outgoing response except that
+   * it is an Object (Record<string,any>).
+   *
+   * This makes `rawMethod` compatible with `DJObject` and `JsonObject` when
+   * needed.
+   *
+   * - logs request, response and errors to console with colors
+   * - includes `id` to match request to response and errors
+   * - uses return value of function to generate response
    */
-  export function method<R extends JsonObject>(fn: Method<R>) {
+  export function rawMethod<R extends Record<string, any>>(fn: Method<R>) {
     return async function (req: NextApiRequest, res: NextApiResponse) {
       /**
        * Keep track of the current `id` so that when we `console.log` details
@@ -69,17 +86,20 @@ export namespace API {
         res.status(500).send(error.stack)
         /**
          * NOTE:
-         * The response from this function card is always discarded; however,
-         * the type of the response is used. If we don't call return here,
-         * then the signature of this function will return the response or
-         * `undefined` which is not what we want for the signature.
+         *
+         * The response from the error path is always discarded; however,
+         * the type of the response of the overall function call is used.
+         *
+         * If we don't call return here, then the signature of this function
+         * will return `& undefined` which is not what we want for the
+         * signature.
          *
          * So we fudge this by telling TypeScript, incorrectly, that it will
-         * never hit this code.
+         * never hit this code (`never`).
          *
          * It doesn't affect operation though (since the return value is never
-         * used) but it will allow us to easily get the response type for
-         * this function.
+         * actually used -- just the type) but it will allow us to get the
+         * response type for the non error paths of this function.
          *
          * Another way you may be tempted to try is to throw an Error, however,
          * depending on the verison of Next, this may stop the server from
@@ -90,6 +110,20 @@ export namespace API {
     }
   }
 
+  /**
+   * - returns value as JSON
+   * - No date support
+   */
+  export function method<R extends JsonObject>(fn: Method<R>) {
+    return rawMethod(fn)
+  }
+
+  /**
+   * - superstruct support
+   * - Add props/return types
+   * - returns value as JSON
+   * - No date support
+   */
   export function structMethod<S extends s.Struct<any>, R extends JsonObject>(
     struct: S,
     fn: (
@@ -101,6 +135,33 @@ export namespace API {
     const method = API.method(async (jsonProps, req, res) => {
       const props = struct.create(jsonProps)
       return await fn(props, req, res)
+    })
+    return method as typeof method & {
+      _Props: s.Infer<S>
+      _Response: PromiseValue<ReturnType<typeof method>>
+    }
+  }
+
+  /**
+   * DJ Method adds several features
+   *
+   * - superstruct support
+   * - Add props/return types
+   * - return value as DJSON (EJSON like JSON response)
+   * - Date support
+   */
+  export function djmethod<S extends s.Struct<any>, R extends DJObject>(
+    struct: S,
+    fn: (
+      props: s.Infer<S>,
+      req: NextApiRequest,
+      res: NextApiResponse
+    ) => Promise<R>
+  ) {
+    const method = API.rawMethod(async (jsonProps, req, res) => {
+      const props = struct.create(jsonProps)
+      const dj = await fn(props, req, res)
+      return toJsonValue(dj)
     })
     return method as typeof method & {
       _Props: s.Infer<S>

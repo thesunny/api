@@ -74,3 +74,13 @@ export type DJSendObject = DJSendSuccess | DJSendFail | DJSendError
 export function djsend<T extends DJSendObject>(value: T) {
   return toJsonValue(value)
 }
+
+export async function edjsend<T extends DJSendObject>(
+  fn: () => Promise<DJObject>
+) {
+  try {
+    await fn()
+  } catch (e) {
+    return { status: "error", message: `${e}` }
+  }
+}

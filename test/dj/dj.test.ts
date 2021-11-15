@@ -1,4 +1,4 @@
-import { toJsonValue, fromJsonValue, DJToJson } from ".."
+import { toJsonValue, fromJsonValue, DJToJson } from "~/src/dj"
 import { AssertType } from "@thesunny/assert-type"
 
 const DATE_MS = 946713600000
