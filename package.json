@@ -1,6 +1,6 @@
 {
   "name": "@thesunny/api2",
-  "version": "2.1.11",
+  "version": "2.1.12",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "main": "dist/src/index.js",
@@ -12,13 +12,7 @@
   "typesVersions": {
     "*": {
       "test-utils": [
-        "dist/src/test-utils/index.d.ts"
-      ],
-      ".": [
-        "dist/src/index.d.ts"
-      ],
-      "*": [
-        "dist/src/*"
+        "dist/src/test-utils"
       ]
     }
   },
