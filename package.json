@@ -1,6 +1,6 @@
 {
   "name": "@thesunny/api2",
-  "version": "2.1.13",
+  "version": "2.1.14",
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "main": "dist/src/index.js",
@@ -24,6 +24,7 @@
     "is-plain-object": "^5.0.0",
     "jsome": "^2.5.0",
     "map-obj": "^5.0.0",
+    "nextjs-cors": "^2.1.0",
     "type-fest": "^2.5.2"
   },
   "peerDependencies": {
