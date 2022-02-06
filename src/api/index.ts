@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import NextCors from "nextjs-cors"
 import { JsonObject, PromiseValue } from "type-fest"
 import { log } from "./log"
 import * as s from "superstruct"
@@ -167,5 +168,28 @@ export namespace API {
       _Props: s.Infer<S>
       _Response: PromiseValue<ReturnType<typeof method>>
     }
+  }
+
+  /**
+   * Add CORS support to a method.
+   *
+   * Pass in the method which can be a call to `djmethod` as an example and
+   * this will add CORS support to that method.
+   *
+   * https://www.npmjs.com/package/nextjs-cors
+   * https://nextjs.org/docs/api-routes/api-middlewares
+   */
+
+  export function withCors<
+    M extends (req: NextApiRequest, res: NextApiResponse) => any
+  >(method: M) {
+    return async function (req: NextApiRequest, res: NextApiResponse) {
+      await NextCors(req, res, {
+        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+        origin: "*",
+        optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+      })
+      return await method(req, res)
+    } as M
   }
 }
