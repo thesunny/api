@@ -185,7 +185,7 @@ export namespace API {
   >(method: M) {
     return async function (req: NextApiRequest, res: NextApiResponse) {
       await NextCors(req, res, {
-        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
         origin: "*",
         optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
       })
