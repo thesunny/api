@@ -75,6 +75,10 @@ export function djsend<T extends DJSendObject>(value: T) {
   return toJsonValue(value)
 }
 
+/**
+ * Like djsend but catches errors and returns that as part of the DJ response
+ * like `{ status: "error", message: "Error in..." }`
+ */
 export async function edjsend<T extends DJSendObject>(
   fn: () => Promise<DJObject>
 ) {
