@@ -171,6 +171,45 @@ export namespace API {
   }
 
   /**
+   * EDJ Method has features of DJMethod and adds:
+   *
+   * - Returns a jsend error
+   */
+  export function edjmethod<S extends s.Struct<any>, R extends DJObject>(
+    struct: S,
+    fn: (
+      props: s.Infer<S>,
+      req: NextApiRequest,
+      res: NextApiResponse
+    ) => Promise<R>
+  ) {
+    const method = API.rawMethod(async (jsonProps, req, res) => {
+      let props
+      try {
+        props = struct.create(jsonProps)
+      } catch (e) {
+        return {
+          status: "error",
+          message: `Error in API props validation: ${e}`,
+        }
+      }
+      try {
+        const dj = await fn(props, req, res)
+        return toJsonValue(dj)
+      } catch (e) {
+        return {
+          status: "error",
+          message: `Error in API function execution: ${e}`,
+        }
+      }
+    })
+    return method as typeof method & {
+      _Props: s.Infer<S>
+      _Response: PromiseValue<ReturnType<typeof method>>
+    }
+  }
+
+  /**
    * Add CORS support to a method.
    *
    * Pass in the method which can be a call to `djmethod` as an example and
